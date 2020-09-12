@@ -6,7 +6,7 @@ lua-resty-queue, event driven ring queue implemented by ngx semaphore.
 Description
 ===========
 
-This Lua library implements a ring queue based on ngx.semaphore which ensures no blocking behavior.
+This Lua library implements a ring queue based on ngx.semaphore which ensures none blocking behavior.
 
 * [Methods](#methods)
     * [new](#new)
