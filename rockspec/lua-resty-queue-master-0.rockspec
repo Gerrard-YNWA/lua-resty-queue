@@ -2,7 +2,7 @@ package = "lua-resty-queue"
 version = "master-0"
 source = {
    url = "git+https://github.com/Gerrard-YNWA/lua-resty-queue.git",
-   branch = master
+   branch = "master"
 }
 description = {
    summary = "lua-resty-queue, event driven ring queue implemented by ngx semaphore.",
