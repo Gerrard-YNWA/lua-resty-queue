@@ -7,15 +7,16 @@ if not tab_ok then
     new_tab = function() return {} end
 end
 
--- constant
-local max_size = 1024
-
 local mt = {__index = _M}
 
+local max_pre_alloc = 128
 
 function _M.new(opts)
-    local capacity = opts.capacity or max_size
-    local queue = new_tab(capacity, 10)
+    local capacity, pre_alloc = opts.capacity, opts.capacity
+    if capacity and capacity > max_pre_alloc then
+        pre_alloc = max_pre_alloc
+    end
+    local queue = new_tab(pre_alloc, 10)
 
     queue.head = 1
     queue.tail = 1
