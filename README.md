@@ -1,12 +1,19 @@
 Name
 ====
 
-lua-resty-queue, event driven ring queue implemented by ngx semaphore.
+lua-resty-queue, event driven ring queue for Openresty.
 
 Description
 ===========
 
 This Lua library implements a ring queue based on ngx.semaphore which ensures none blocking behavior.
+
+Install
+=======
+Install by luarocks:
+```
+luarocks install lua-resty-queue
+```
 
 * [Methods](#methods)
     * [new](#new)

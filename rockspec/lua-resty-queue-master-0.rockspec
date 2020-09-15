@@ -5,7 +5,7 @@ source = {
    branch = "master"
 }
 description = {
-   summary = "lua-resty-queue, event driven ring queue implemented by ngx semaphore.",
+   summary = "lua-resty-queue, event driven ring queue for Openresty.",
    homepage = "https://github.com/Gerrard-YNWA/lua-resty-queue",
    license = "Apache License 2.0",
    maintainer = "Gerrard-YNWA <gyc.ssdut@gmail.com>"
