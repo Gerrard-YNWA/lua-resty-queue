@@ -1,5 +1,8 @@
 local semaphore = require('ngx.semaphore')
 
+local ngx = ngx
+local worker_exiting = ngx.worker.exiting
+
 local _M = {_VERSION = "0.1"}
 
 local tab_ok, new_tab = pcall(require, "table.new")
@@ -59,7 +62,7 @@ function _M:push(v, wait)
             return nil, "queue is full"
         end
         self._push_blocking = true
-        while true do
+        while not worker_exiting() do
             local ok, err = self.push_sema:wait(self.timeout)
             if ok then
                 break
@@ -86,7 +89,7 @@ end
 function _M:pop(wait)
     if self.pop_sema and wait ~= false then
         local ok, err
-        while true do
+        while not worker_exiting() do
             ok, err = self.pop_sema:wait(self.timeout)
             if ok then
                 break
