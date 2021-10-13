@@ -122,7 +122,7 @@ end
 
 function _M:clear()
     while self:size() > 0 do
-        self:pop(false)
+        self:pop()
     end
     self.head = 1
     self.tail = 1

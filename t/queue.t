@@ -37,6 +37,7 @@ GET /t
 new ok
 
 
+
 === TEST 2: push and pop blocked
 --- http_config eval: $::HttpConfig
 --- config
@@ -81,6 +82,7 @@ GET /t
 all checks done
 
 
+
 === TEST 3: push and pop return instantly
 --- http_config eval: $::HttpConfig
 --- config
@@ -122,6 +124,7 @@ GET /t
 push returns 'queue is full' on element 6
 
 
+
 === TEST 4: clear
 --- http_config eval: $::HttpConfig
 --- config
@@ -144,7 +147,6 @@ push returns 'queue is full' on element 6
             ngx.say(string.format("size: %d, capacity: %d, is_full: %s, is_empty: %s", queue:size(), queue:capacity(), queue:full(), queue:empty()))
             queue:clear()
             ngx.say(string.format("size: %d, capacity: %d, is_full: %s, is_empty: %s", queue:size(), queue:capacity(), queue:full(), queue:empty()))
-
         }
     }
 --- request
@@ -154,6 +156,8 @@ GET /t
 --- response_body
 size: 5, capacity: 5, is_full: true, is_empty: false
 size: 0, capacity: 5, is_full: false, is_empty: true
+
+
 
 === TEST 5: test full
 --- http_config eval: $::HttpConfig
@@ -179,3 +183,38 @@ GET /t
 --- response_body
 true
 true
+
+
+
+=== TEST 6: clear blocked queue
+--- http_config eval: $::HttpConfig
+--- config
+    location = /t {
+        content_by_lua_block {
+            local ringq = require("resty.queue")
+            local queue, err = ringq.new({
+                capacity = 5,
+                blocked = true,
+                timeout = 1
+            })
+
+            if err then
+                ngx.log(ngx.ERR, "new queue error: ", err)
+            end
+
+            for i = 1, 5 do
+                queue:push(i)
+            end
+
+            ngx.say(string.format("size: %d, capacity: %d, is_full: %s, is_empty: %s, sema post: %d", queue:size(), queue:capacity(), queue:full(), queue:empty(), queue.pop_sema:count()))
+            queue:clear()
+            ngx.say(string.format("size: %d, capacity: %d, is_full: %s, is_empty: %s, sema post: %d", queue:size(), queue:capacity(), queue:full(), queue:empty(), queue.pop_sema:count()))
+        }
+    }
+--- request
+GET /t
+--- no_error_log
+[error]
+--- response_body
+size: 5, capacity: 5, is_full: true, is_empty: false, sema post: 5
+size: 0, capacity: 5, is_full: false, is_empty: true, sema post: 0
