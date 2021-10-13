@@ -47,7 +47,7 @@ end
 
 
 function _M:full()
-    return (self.tail + 1) % self._max_n == self.head
+    return self:size() == self:capacity()
 end
 
 

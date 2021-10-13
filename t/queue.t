@@ -154,3 +154,28 @@ GET /t
 --- response_body
 size: 5, capacity: 5, is_full: true, is_empty: false
 size: 0, capacity: 5, is_full: false, is_empty: true
+
+=== TEST 5: test full
+--- http_config eval: $::HttpConfig
+--- config
+    location = /t {
+        content_by_lua_block {
+            local ringq = require("resty.queue")
+            local queue, err = ringq.new({
+                capacity = 5
+            })
+
+            queue.head = 6
+            queue.tail = 5
+            ngx.say(queue:full())
+
+            queue.head = 1
+            queue.tail = 6
+            ngx.say(queue:full())
+        }
+    }
+--- request
+GET /t
+--- response_body
+true
+true
